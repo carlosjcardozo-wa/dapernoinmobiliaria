@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Daperno & Asociados{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}" class="nav-logo">
+            <div class="nav-logo-text">Daperno &amp; Asoc.</div>
+            <div class="nav-logo-sub">Soluciones Inmobiliarias</div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}#propiedades">Propiedades</a></li>
+            <li><a href="{{ url_for('index') }}#mapa">Mapa</a></li>
+            <li><a href="{{ url_for('admin_dashboard') }}">Admin</a></li>
+        </ul>
+        <a href="tel:+5493496426044" class="nav-phone">📞 (3496) 42-6044</a>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2026 -  CJCK Design - Todos los derechos reservados - Daperno & Asociados - Esperanza, Santa Fe</p>
+            <p>Mat. 0185 y 0196</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

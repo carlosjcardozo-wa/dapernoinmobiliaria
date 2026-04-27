@@ -1,0 +1,129 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block admin_content %}
+<div class="form-container">
+    <h1>{{ 'Editar' if propiedad else 'Nueva' }} Propiedad</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Título *</label>
+                <input type="text" name="titulo" value="{{ propiedad.titulo if propiedad }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Operación *</label>
+                <select name="operacion" required>
+                    <option value="venta" {{ 'selected' if propiedad and propiedad.operacion == 'venta' }}>Venta</option>
+                    <option value="alquiler" {{ 'selected' if propiedad and propiedad.operacion == 'alquiler' }}>Alquiler</option>
+                    <option value="alq-temp" {{ 'selected' if propiedad and propiedad.operacion == 'alq-temp' }}>Alquiler Temporario</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Tipo *</label>
+                <select name="tipo" required>
+                    <option value="Casa" {{ 'selected' if propiedad and propiedad.tipo == 'Casa' }}>Casa</option>
+                    <option value="Departamento" {{ 'selected' if propiedad and propiedad.tipo == 'Departamento' }}>Departamento</option>
+                    <option value="Local comercial" {{ 'selected' if propiedad and propiedad.tipo == 'Local comercial' }}>Local comercial</option>
+                    <option value="Terreno" {{ 'selected' if propiedad and propiedad.tipo == 'Terreno' }}>Terreno</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Precio *</label>
+                <input type="text" name="precio" value="{{ propiedad.precio if propiedad }}" placeholder="USD 50.000 o $250.000/mes" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Dirección *</label>
+                <input type="text" name="direccion" value="{{ propiedad.direccion if propiedad }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Barrio *</label>
+                <input type="text" name="barrio" value="{{ propiedad.barrio if propiedad }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Latitud</label>
+                <input type="number" step="any" name="latitud" value="{{ propiedad.latitud if propiedad else -31.4472 }}">
+                <small>Ej: -31.4472</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Longitud</label>
+                <input type="number" step="any" name="longitud" value="{{ propiedad.longitud if propiedad else -60.9313 }}">
+                <small>Ej: -60.9313</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Superficie (m²)</label>
+                <input type="number" step="any" name="superficie" value="{{ propiedad.superficie if propiedad else 0 }}">
+            </div>
+            
+            <div class="form-group">
+                <label>Ambientes</label>
+                <input type="number" name="ambientes" value="{{ propiedad.ambientes if propiedad else 0 }}">
+            </div>
+            
+            <div class="form-group">
+                <label>Dormitorios</label>
+                <input type="number" name="dormitorios" value="{{ propiedad.dormitorios if propiedad else 0 }}">
+            </div>
+            
+            <div class="form-group">
+                <label>Baños</label>
+                <input type="number" name="banos" value="{{ propiedad.banos if propiedad else 0 }}">
+            </div>
+            
+            <div class="form-group full-width">
+                <label>Descripción</label>
+                <textarea name="descripcion" rows="5">{{ propiedad.descripcion if propiedad }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="destacado" {{ 'checked' if propiedad and propiedad.destacado }}>
+                    Destacar propiedad
+                </label>
+            </div>
+            
+            <div class="form-group full-width">
+                <label>Fotos</label>
+                <input type="file" name="fotos" multiple accept="image/*">
+                <small>Puede seleccionar múltiples imágenes (JPG, PNG, WEBP)</small>
+                
+                {% if propiedad and propiedad.imagenes %}
+                <div class="imagenes-actuales">
+                    <h4>Imágenes actuales:</h4>
+                    <div class="imagenes-grid">
+                        {% for img in propiedad.imagenes %}
+                        <div class="imagen-item" data-id="{{ img.id }}">
+                            <img src="{{ img.url }}" alt="Imagen">
+                            <button type="button" class="btn-remove-img" data-id="{{ img.id }}">✕</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-guardar">Guardar</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-cancelar">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.querySelectorAll('.btn-remove-img').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        await fetch(`/admin/eliminar-imagen/${id}`, { method: 'POST' });
+        btn.closest('.imagen-item').remove();
+    });
+});
+</script>
+{% endblock %}

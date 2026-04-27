@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daperno & Asociados | Inmobiliaria · Esperanza, Santa Fe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="/" class="nav-logo">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Daperno & Asociados">
+    <div>
+      <div class="nav-logo-text">Daperno &amp; Asoc.</div>
+      <div class="nav-logo-sub">Soluciones Inmobiliarias</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#propiedades">Propiedades</a></li>
+    <li><a href="#mapa">Mapa</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#tasaciones">Tasaciones</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <a href="tel:+5493496502579" class="nav-phone">📞 (3496) 42-6044</a>
+  <a href="/admin" class="btn btn-p btn-sm">Admin</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- Contenedor de la imagen de fondo -->
+  <div class="hero-bg">
+    <img src="{{ url_for('static', filename='hero-fondo.jpg') }}" alt="Fondo">
+  </div>
+  <div class="h-orb2"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Esperanza · Santa Fe · Argentina</div>
+      <h1 class="hero-title">Encontrá tu próximo<br>hogar <em>con confianza</em></h1>
+      <p class="hero-sub">Desde 2011 ayudando a familias y empresas a encontrar la propiedad ideal. Compra, venta, alquiler y tasaciones en Esperanza y zona.</p>
+      <div class="hero-acts">
+        <a href="#propiedades" class="btn btn-p">Ver propiedades</a>
+        <a href="#contacto" class="btn btn-o">Hablar con un asesor</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>+14</strong><span>Años en el mercado</span></div>
+        <div class="hero-stat"><strong>+1.000</strong><span>Propiedades gestionadas</span></div>
+        <div class="hero-stat"><strong>5.0⭐</strong><span>Calificación de clientes</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="hero-search">
+        <h3>Buscá tu propiedad</h3>
+        <div class="stabs">
+          <button class="stab active" onclick="setTab(this,'venta')">Comprar</button>
+          <button class="stab" onclick="setTab(this,'alquiler')">Alquilar</button>
+          <button class="stab" onclick="setTab(this,'alq-temp')">Temporario</button>
+        </div>
+        <div class="sform">
+          <div class="srow">
+            <div class="sg"><label>Tipo</label>
+              <select id="sTipo"><option value="">Cualquier tipo</option><option>Casa</option><option>Departamento</option><option>Local comercial</option><option>Oficina</option><option>Terreno</option><option>Campo</option></select>
+            </div>
+            <div class="sg"><label>Ambientes</label>
+              <select id="sAmb"><option value="">Todos</option><option>1</option><option>2</option><option>3</option><option>4+</option></select>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="sg"><label>Precio desde</label><input type="text" id="sPmin" placeholder="$ mínimo"></div>
+            <div class="sg"><label>Precio hasta</label><input type="text" id="sPmax" placeholder="$ máximo"></div>
+          </div>
+          <button class="btn-search" onclick="searchProps()">🔍 Buscar propiedades</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="sw">
+    <div>
+      <div class="sk">Nuestros servicios</div>
+      <h2 class="st">Todo lo que necesitás <em>en un solo lugar</em></h2>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card"><div class="svc-ic">🏠</div><h3>Compra &amp; Venta</h3><p>Asesoramiento integral en cada etapa. Gestionamos documentación, negociación y escrituración para que su operación sea segura y exitosa.</p></div>
+      <div class="svc-card"><div class="svc-ic">🔑</div><h3>Alquileres</h3><p>Contratos permanentes y temporarios. Acompañamos a propietarios e inquilinos con transparencia y cumplimiento de la ley vigente.</p></div>
+      <div class="svc-card"><div class="svc-ic">📋</div><h3>Tasaciones</h3><p>Valuaciones profesionales emitidas por corredores matriculados, con análisis de mercado actualizado de Esperanza y zona.</p></div>
+      <div class="svc-card"><div class="svc-ic">🏢</div><h3>Administración</h3><p>Administramos su propiedad: cobranzas, rendiciones mensuales, atención de inquilinos y mantenimiento preventivo.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROPIEDADES -->
+<section id="propiedades">
+  <div class="sw">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:30px">
+      <div>
+        <div class="sk">Portfolio actual</div>
+        <h2 class="st">Propiedades <em>disponibles</em></h2>
+        <p class="ss" id="propCount">Cargando...</p>
+      </div>
+      <button class="btn btn-p" onclick="openAdmin()">+ Agregar inmueble</button>
+    </div>
+    <div class="pctrls">
+      <div class="ftabs">
+        <button class="ftab active" onclick="filterCards(this,'all')">Todos</button>
+        <button class="ftab" onclick="filterCards(this,'venta')">En Venta</button>
+        <button class="ftab" onclick="filterCards(this,'alquiler')">Alquiler</button>
+        <button class="ftab" onclick="filterCards(this,'alq-temp')">Alq. Temporario</button>
+      </div>
+      <select class="sort-s" onchange="applyFilters(this.value)">
+        <option value="reciente">Más recientes</option>
+        <option value="menor">Menor precio</option>
+        <option value="mayor">Mayor precio</option>
+      </select>
+    </div>
+    <div class="pgrid" id="propsGrid"></div>
+  </div>
+</section>
+
+<!-- MAPA -->
+<section id="mapa">
+  <div class="sw">
+    <div style="margin-bottom:36px">
+      <div class="sk">Ubicaciones en Esperanza</div>
+      <h2 class="st">Encontrá propiedades<br>en el <em>mapa interactivo</em></h2>
+      <p class="ss">Cada inmueble publicado aparece automáticamente en el mapa. Hacé clic en un marcador o en la lista para ver los detalles.</p>
+    </div>
+    <div class="maplayout">
+      <div id="mapEl"></div>
+      <div class="msidebar">
+        <h4>Inmuebles en el mapa</h4>
+        <div class="mlist" id="mapList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros">
+  <div class="sw">
+    <div class="abt-layout">
+      <div class="abt-imgwrap">
+        <div class="abt-imginner">
+          <!-- Aquí cambiamos el emoji por tu imagen -->
+          <img src="{{ url_for('static', filename='hero-foto2.jpg') }}" alt="Oficina Daperno">
+        </div>
+        <div class="abt-badge"><strong>2011</strong><span>fundación en<br>Esperanza</span></div>
+      </div>
+      <div>
+        <div class="sk">Quiénes somos</div>
+        <h2 class="st">Confianza y <em>cercanía</em><br>en cada operación</h2>
+        <div class="abt-text">
+          <p>Daperno &amp; Asociados nació en Esperanza el 16 de mayo de 2011 con el objetivo de brindar un servicio inmobiliario cercano, honesto y profesional. Desde entonces hemos acompañado a cientos de familias y empresas en sus decisiones inmobiliarias más importantes.</p>
+          <p>Nuestro equipo de corredores matriculados (Mat. 0185 y 0196) conoce cada barrio y tendencia del mercado local, ofreciendo asesoramiento genuino y resultados concretos. Nos avala una calificación de 5 estrellas por nuestros clientes.</p>
+        </div>
+        <div class="abt-vals">
+          <div class="avitem"><h4>Transparencia</h4><p>Claridad total en cada operación, sin sorpresas.</p></div>
+          <div class="avitem"><h4>Compromiso</h4><p>Sus objetivos son nuestra prioridad.</p></div>
+          <div class="avitem"><h4>Conocimiento local</h4><p>Más de 14 años en el mercado de Esperanza.</p></div>
+          <div class="avitem"><h4>Agilidad</h4><p>Procesos rápidos y comunicación permanente.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TASACIONES -->
+<section id="tasaciones">
+  <div class="sw">
+    <div class="tas-layout">
+      <div>
+        <div class="sk">Valuaciones profesionales</div>
+        <h2 class="st">Conocé el valor real<br>de tu <em>propiedad</em></h2>
+        <div class="tas-info">
+          <p>Realizamos tasaciones precisas y fundamentadas en datos reales del mercado de Esperanza. Nuestros corredores matriculados emiten un informe detallado con comparables actualizados.</p>
+          <div class="tsteps">
+            <div class="tstep"><div class="tsnum">1</div><div><h4>Completá el formulario</h4><p>Indicanos los datos básicos de tu propiedad.</p></div></div>
+            <div class="tstep"><div class="tsnum">2</div><div><h4>Visita de nuestro asesor</h4><p>Coordinamos una visita para evaluar el inmueble.</p></div></div>
+            <div class="tstep"><div class="tsnum">3</div><div><h4>Recibí tu tasación</h4><p>Informe con el valor de mercado actualizado.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tas-form">
+        <h3>Solicitá tu tasación gratuita</h3>
+        <div class="frow">
+          <div class="fg"><label>Nombre</label><input type="text" placeholder="Su nombre"></div>
+          <div class="fg"><label>Teléfono / WhatsApp</label><input type="tel" placeholder="+54 9 3496..."></div>
+        </div>
+        <div class="fg"><label>Dirección de la propiedad</label><input type="text" placeholder="Calle, número, Esperanza"></div>
+        <div class="frow">
+          <div class="fg"><label>Tipo de inmueble</label><select><option>Casa</option><option>Departamento</option><option>Local comercial</option><option>Oficina</option><option>Terreno</option></select></div>
+          <div class="fg"><label>Superficie aprox. (m²)</label><input type="number" placeholder="Ej: 150"></div>
+        </div>
+        <div class="fg"><label>Información adicional</label><textarea placeholder="Antigüedad, estado general, mejoras..."></textarea></div>
+        <button class="btn btn-p" style="width:100%" onclick="submitForm(this,'Solicitud enviada ✓')">Solicitar tasación gratuita</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="sw">
+    <div style="text-align:center;margin-bottom:44px">
+      <div class="sk" style="justify-content:center">Contacto</div>
+      <h2 class="st" style="text-align:center">¿Tenés una consulta?<br><em>Estamos para ayudarte</em></h2>
+    </div>
+    <div class="ct-layout">
+      <div class="ct-form">
+        <h3>Envianos tu consulta</h3>
+        <div class="ctrow">
+          <div class="ctg"><label>Nombre</label><input type="text" placeholder="Su nombre completo"></div>
+          <div class="ctg"><label>Teléfono</label><input type="tel" placeholder="+54 9 3496..."></div>
+        </div>
+        <div class="ctg"><label>Email</label><input type="email" placeholder="email@ejemplo.com"></div>
+        <div class="ctg"><label>¿En qué podemos ayudarte?</label>
+          <select><option>Comprar una propiedad</option><option>Vender mi propiedad</option><option>Alquilar una propiedad</option><option>Poner en alquiler</option><option>Solicitar tasación</option><option>Administración</option><option>Otra consulta</option></select>
+        </div>
+        <div class="ctg"><label>Mensaje</label><textarea placeholder="Contanos lo que necesitás..."></textarea></div>
+        <button class="btn btn-p" style="width:100%" onclick="submitForm(this,'¡Consulta recibida! Te contactaremos pronto ✓')">Enviar consulta</button>
+      </div>
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:600;margin-bottom:14px;padding-top:20px">Encontranos en <em style="color:var(--accd);font-style:italic">Esperanza</em></h3>
+        <p class="ss" style="margin-bottom:22px">Nuestro equipo está disponible para atenderte en la oficina o por WhatsApp. No dudes en consultarnos sin compromiso.</p>
+        <div class="ciitems">
+          <div class="ciitem"><div class="ciic">📍</div><div><div class="cilabel">Dirección</div><div class="cival">Estrada 2052<br>Esperanza, Santa Fe</div></div></div>
+          <div class="ciitem"><div class="ciic">📞</div><div><div class="cilabel">Teléfono</div><div class="cival">+54 (3496) 42-6044<br>Lunes a Viernes 9:00–18:00 h</div></div></div>
+          <div class="ciitem"><div class="ciic">💬</div><div><div class="cilabel">WhatsApp</div><div class="cival">+54 9 3496 42-6044 · Respuesta rápida</div></div></div>
+          <div class="ciitem"><div class="ciic">🌐</div><div><div class="cilabel">Sitio web</div><div class="cival"><a href="#" style="color:var(--accd)">dapernoinmobiliaria.negocio.site</a></div></div></div>
+        </div>
+        <div class="socrow">
+          <a href="#" class="socbtn">📘</a>
+          <a href="#" class="socbtn">📷</a>
+          <a href="#" class="socbtn">💬</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fi">
+    <div class="ftop">
+      <div>
+        <a href="/" class="fbrand">
+            <img src="{{ url_for('static', filename='logo2.png') }}" alt="Daperno & Asociados">
+          <span class="fbname">Daperno &amp; Asociados</span>
+        </a>
+        <p>Desde 2011 construyendo confianza en el mercado inmobiliario de Esperanza, Santa Fe. Compra, venta, alquiler, tasaciones y administración.</p>
+      </div>
+      <div><h4>Servicios</h4><ul class="flinks"><li><a href="#propiedades">Compra &amp; Venta</a></li><li><a href="#propiedades">Alquiler</a></li><li><a href="#tasaciones">Tasaciones</a></li></ul></div>
+      <div><h4>Navegación</h4><ul class="flinks"><li><a href="#servicios">Servicios</a></li><li><a href="#propiedades">Propiedades</a></li><li><a href="#mapa">Mapa</a></li><li><a href="#contacto">Contacto</a></li></ul></div>
+    </div>
+    <div class="fbot"><span>© 2026 CJCK Design - Todos los derechos reservados - Daperno &amp; Asociados</span><span>Mat. 0185 y 0196 · Esperanza, Santa Fe</span></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/5493496502579" class="wabtn" target="_blank">💬</a>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <div class="amodal">
+    <button class="aclose" onclick="closeAdmin()">✕</button>
+    <h2>Agregar nuevo <span>inmueble</span></h2>
+    <div class="ar">
+      <div class="ag"><label>Título</label><input type="text" id="aTitle" placeholder="Ej: Casa 3 dormitorios"></div>
+      <div class="ag"><label>Operación</label><select id="aOp"><option value="venta">Venta</option><option value="alquiler">Alquiler</option><option value="alq-temp">Temporario</option></select></div>
+    </div>
+    <div class="ar">
+      <div class="ag"><label>Tipo</label><select id="aTipo"><option>Casa</option><option>Departamento</option><option>Local comercial</option><option>Terreno</option></select></div>
+      <div class="ag"><label>Precio</label><input type="text" id="aPrecio" placeholder="USD 95.000"></div>
+    </div>
+    <div class="ar">
+      <div class="ag"><label>Dirección</label><input type="text" id="aDir" placeholder="Av. San Martín 400"></div>
+      <div class="ag"><label>Barrio</label><input type="text" id="aBarrio" placeholder="Centro"></div>
+    </div>
+    <div class="ar">
+      <div class="ag"><label>Superficie</label><input type="number" id="aSup" placeholder="120"></div>
+      <div class="ag"><label>Ambientes</label><select id="aAmb"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></div>
+    </div>
+    <div class="ar">
+      <div class="ag"><label>Dormitorios</label><select id="aDorm"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></div>
+      <div class="ag"><label>Baños</label><select id="aBan"><option>1</option><option selected>2</option><option>3</option></select></div>
+    </div>
+    <div class="ag"><label>Descripción</label><textarea id="aDesc" rows="2" placeholder="Características..."></textarea></div>
+    
+    <div class="ag">
+      <label>Fotos</label>
+      <div class="photo-upload-zone" onclick="document.getElementById('photoInput').click()">
+        <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotoSelect(event)">
+        <div class="puz-icon">📷</div>
+        <p>Hacé clic para subir fotos</p>
+      </div>
+      <div class="photo-previews" id="photoPreviews"></div>
+    </div>
+
+    <div class="ar">
+      <div class="ag"><label>Latitud</label><input type="number" id="aLat" step="0.0001" value="-31.4472"></div>
+      <div class="ag"><label>Longitud</label><input type="number" id="aLng" step="0.0001" value="-60.9313"></div>
+    </div>
+    <div class="aacts">
+      <button class="btn btn-p" onclick="addProperty()">Publicar</button>
+      <button class="btn btn-o" onclick="closeAdmin()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== VARIABLES GLOBALES ==========
+let heroTab = 'venta';            // pestaña activa: 'venta', 'alquiler', 'alq-temp'
+let showAll = false;              // si true, muestra todas las operaciones (ignora heroTab)
+let map, markers = {};
+let pendingPhotos = [];
+
+// ========== FUNCIONES AUXILIARES UI ==========
+function submitForm(btn, msg) {
+    const original = btn.textContent;
+    btn.textContent = msg;
+    setTimeout(() => { btn.textContent = original; }, 3000);
+}
+
+function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ========== CARGA DE DATOS ==========
+async function loadProperties() {
+    try {
+        const res = await fetch('/api/propiedades');
+        window.propiedades = await res.json();
+        // Inicializar la vista
+        searchProps();
+        renderMarkers();
+        renderMList();
+    } catch(e) {
+        console.error(e);
+        document.getElementById('propsGrid').innerHTML = '<div class="pempty">Error al cargar propiedades</div>';
+    }
+}
+
+// ========== RENDER DE TARJETAS ==========
+function renderImgArea(p) {
+    if (p.fotos && p.fotos.length > 0) {
+        return `<img src="${p.fotos[0]}" alt="${p.titulo}">`;
+    }
+    return `<span>${p.ico}</span>`;
+}
+
+function renderCards(lista) {
+    const grid = document.getElementById('propsGrid');
+    const contador = document.getElementById('propCount');
+    
+    if (!lista.length) {
+        grid.innerHTML = '<div class="pempty">No hay propiedades con esos filtros.</div>';
+        contador.textContent = '0 propiedades encontradas';
+        return;
+    }
+    
+    contador.textContent = `${lista.length} propiedad${lista.length !== 1 ? 'es' : ''} encontrada${lista.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = lista.map(p => `
+        <div class="pcard">
+            <div class="pimg">
+                ${renderImgArea(p)}
+                <span class="pbadge ${p.op === 'venta' ? 'bv' : (p.op === 'alquiler' ? 'ba' : 'bt')}">
+                    ${p.op === 'venta' ? 'En Venta' : (p.op === 'alquiler' ? 'Alquiler' : 'Temp.')}
+                </span>
+            </div>
+            <div class="pbody">
+                <div class="pprice">${p.precio}</div>
+                <div class="pname">${p.titulo}</div>
+                <div class="ploc">📍 ${p.dir}, ${p.barrio}</div>
+                <div class="pfeats">
+                    ${p.sup ? `<span class="pfeat">📐 ${p.sup} m²</span>` : ''}
+                    ${p.amb ? `<span class="pfeat">🏠 ${p.amb} amb.</span>` : ''}
+                    ${p.dorm ? `<span class="pfeat">🛏️ ${p.dorm} dorm.</span>` : ''}
+                    ${p.ban ? `<span class="pfeat">🚽 ${p.ban} baño${p.ban !== 1 ? 's' : ''}</span>` : ''}
+                </div>
+            </div>
+            <div class="pacts">
+                <a href="https://wa.me/5493496502579?text=Hola%2C%20consulto%20por%3A%20${encodeURIComponent(p.titulo)}" target="_blank" class="btn pwa">💬 WhatsApp</a>
+                <a href="/propiedad/${p.id}" class="btn pinfo">🔍 Ver detalles</a>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ========== LÓGICA DE BÚSQUEDA Y FILTROS ==========
+function searchProps(sortOrder = 'reciente') {
+    if (!window.propiedades) return;
+    
+    // 1. Obtener valores del formulario
+    const tipo = document.getElementById('sTipo').value;
+    const ambientes = document.getElementById('sAmb').value;
+    let precioMin = document.getElementById('sPmin').value;
+    let precioMax = document.getElementById('sPmax').value;
+    
+    // Limpiar precios (eliminar puntos y comas)
+    precioMin = precioMin ? parseInt(precioMin.replace(/\./g, '').replace(/,/g, '')) : 0;
+    precioMax = precioMax ? parseInt(precioMax.replace(/\./g, '').replace(/,/g, '')) : Infinity;
+    
+    // 2. Filtrar por operación (si no estamos en modo "Todos")
+    let resultados = showAll ? [...window.propiedades] : window.propiedades.filter(p => p.op === heroTab);
+    
+    // 3. Filtrar por tipo
+    if (tipo) {
+        resultados = resultados.filter(p => p.tipo === tipo);
+    }
+    
+    // 4. Filtrar por ambientes
+    if (ambientes) {
+        const ambNum = parseInt(ambientes);
+        resultados = resultados.filter(p => p.amb >= ambNum);
+    }
+    
+    // 5. Filtrar por rango de precio
+    resultados = resultados.filter(p => {
+        let precioNum = 0;
+        const match = p.precio.match(/\d[\d\.]*/);
+        if (match) {
+            precioNum = parseInt(match[0].replace(/\./g, ''));
+        }
+        return precioNum >= precioMin && precioNum <= precioMax;
+    });
+    
+    // 6. Ordenar
+    if (sortOrder === 'menor') {
+        resultados.sort((a, b) => {
+            let pa = parseInt((a.precio.match(/\d[\d\.]*/) || [0])[0].replace(/\./g, ''));
+            let pb = parseInt((b.precio.match(/\d[\d\.]*/) || [0])[0].replace(/\./g, ''));
+            return pa - pb;
+        });
+    } else if (sortOrder === 'mayor') {
+        resultados.sort((a, b) => {
+            let pa = parseInt((a.precio.match(/\d[\d\.]*/) || [0])[0].replace(/\./g, ''));
+            let pb = parseInt((b.precio.match(/\d[\d\.]*/) || [0])[0].replace(/\./g, ''));
+            return pb - pa;
+        });
+    }
+    // "reciente" no requiere orden (ya vienen por id descendente)
+    
+    // 7. Mostrar resultados
+    renderCards(resultados);
+    document.getElementById('propCount').textContent = `${resultados.length} resultado${resultados.length !== 1 ? 's' : ''} de búsqueda`;
+}
+
+// Aplicar filtros desde los botones rápidos (Todos, En Venta, etc.)
+function filterCards(btn, op) {
+    // Cambiar estilo del botón activo
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    if (op === 'all') {
+        showAll = true;
+    } else {
+        showAll = false;
+        heroTab = op;
+        // Sincronizar la pestaña del buscador
+        document.querySelectorAll('.stab').forEach(stab => {
+            if ((op === 'venta' && stab.textContent.includes('Comprar')) ||
+                (op === 'alquiler' && stab.textContent.includes('Alquilar')) ||
+                (op === 'alq-temp' && stab.textContent.includes('Temporario'))) {
+                stab.classList.add('active');
+            } else {
+                stab.classList.remove('active');
+            }
+        });
+    }
+    // Obtener el orden actual del select
+    const sortSelect = document.querySelector('.sort-s');
+    const sortOrder = sortSelect ? sortSelect.value : 'reciente';
+    searchProps(sortOrder);
+}
+
+// Cambiar pestaña (Comprar / Alquilar / Temporario)
+function setTab(btn, v) {
+    document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    heroTab = v;
+    showAll = false;
+    // También desactivar el botón "Todos" visualmente
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+    const sortSelect = document.querySelector('.sort-s');
+    const sortOrder = sortSelect ? sortSelect.value : 'reciente';
+    searchProps(sortOrder);
+}
+
+// Aplicar orden (desde el select)
+function applyFilters(sortOrder) {
+    searchProps(sortOrder);
+}
+
+// ========== MAPA ==========
+function mkIcon() {
+    return L.divIcon({ 
+        html: `<div style="background:#E8834A;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:16px">🏠</div>`, 
+        iconSize: [30, 30], 
+        className: '' 
+    });
+}
+
+function renderMarkers() {
+    if (!map) return;
+    Object.values(markers).forEach(m => map.removeLayer(m));
+    markers = {};
+    if (!window.propiedades) return;
+    window.propiedades.forEach(p => {
+        if (p.lat && p.lng && p.lat !== 0 && p.lng !== 0) {
+            const m = L.marker([p.lat, p.lng], { icon: mkIcon() });
+            m.addTo(map);
+            const operacionTexto = p.op === 'venta' ? '🏷️ En Venta' : (p.op === 'alquiler' ? '🔑 Alquiler' : '📅 Temporario');
+    m.bindPopup(`
+        <div style="font-family:'Inter',sans-serif;min-width:180px">
+            <div style="font-weight:700;font-size:1rem;margin-bottom:4px">${p.titulo}</div>
+            <div style="font-size:0.8rem;color:#7A6655;margin-bottom:6px">📍 ${p.dir}</div>
+            <div style="font-size:0.75rem;color:#E8834A;font-weight:600;margin-bottom:8px">${operacionTexto} - ${p.precio}</div>
+            <a href="/propiedad/${p.id}" style="display:block;text-align:center;background:#E8834A;color:white;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:0.7rem;font-weight:600">Ver detalles →</a>
+        </div>
+    `);
+            markers[p.id] = m;
+        }
+    });
+}
+
+function renderMList() {
+    if (!window.propiedades) return;
+    document.getElementById('mapList').innerHTML = window.propiedades.map(p => `
+        <div class="mitem" onclick="flyTo(${p.id})">
+            <div class="mic">${p.ico}</div>
+            <div><div class="miname">${p.titulo}</div><div class="miprice">${p.precio}</div></div>
+        </div>
+    `).join('');
+}
+
+function flyTo(id) {
+    const p = window.propiedades.find(x => x.id === id);
+    if (p && map) map.flyTo([p.lat, p.lng], 16);
+}
+
+function initMap() {
+    map = L.map('mapEl').setView([-31.4472, -60.9313], 13);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+    }).addTo(map);
+    renderMarkers();
+}
+
+// ========== ADMIN: FOTOS ==========
+function handlePhotoSelect(e) {
+    Array.from(e.target.files).forEach(f => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            pendingPhotos.push({ id: Date.now() + Math.random(), dataUrl: ev.target.result });
+            renderPhotoPreviews();
+        };
+        reader.readAsDataURL(f);
+    });
+    e.target.value = '';
+}
+
+function removePhoto(id) {
+    pendingPhotos = pendingPhotos.filter(p => p.id !== id);
+    renderPhotoPreviews();
+}
+
+function renderPhotoPreviews() {
+    const container = document.getElementById('photoPreviews');
+    if (!pendingPhotos.length) { container.innerHTML = ''; return; }
+    container.innerHTML = pendingPhotos.map(p => `
+        <div class="photo-preview-item">
+            <img src="${p.dataUrl}">
+            <button class="rm-photo" onclick="removePhoto(${p.id})">✕</button>
+        </div>
+    `).join('');
+}
+
+function openAdmin() { document.getElementById('adminPanel').classList.add('open'); }
+function closeAdmin() { document.getElementById('adminPanel').classList.remove('open'); }
+
+async function addProperty() {
+    const formData = new FormData();
+    formData.append('titulo', document.getElementById('aTitle').value);
+    formData.append('operacion', document.getElementById('aOp').value);
+    formData.append('tipo', document.getElementById('aTipo').value);
+    formData.append('precio', document.getElementById('aPrecio').value);
+    formData.append('direccion', document.getElementById('aDir').value);
+    formData.append('barrio', document.getElementById('aBarrio').value);
+    formData.append('latitud', document.getElementById('aLat').value);
+    formData.append('longitud', document.getElementById('aLng').value);
+    formData.append('superficie', document.getElementById('aSup').value);
+    formData.append('ambientes', document.getElementById('aAmb').value);
+    formData.append('dormitorios', document.getElementById('aDorm').value);
+    formData.append('banos', document.getElementById('aBan').value);
+    formData.append('descripcion', document.getElementById('aDesc').value);
+    
+    for (let p of pendingPhotos) {
+        const blob = await fetch(p.dataUrl).then(r => r.blob());
+        formData.append('fotos', blob, 'foto.jpg');
+    }
+    
+    const res = await fetch('/admin/nueva', { method: 'POST', body: formData });
+    if (res.ok) {
+        toast('✓ Propiedad publicada');
+        closeAdmin();
+        loadProperties();
+        pendingPhotos = [];
+        renderPhotoPreviews();
+        document.querySelectorAll('#adminPanel input, #adminPanel textarea').forEach(el => el.value = '');
+    } else {
+        toast('Error al publicar');
+    }
+}
+
+// ========== INICIALIZACIÓN ==========
+window.addEventListener('scroll', () => document.getElementById('mainNav').classList.toggle('scrolled', scrollY > 60));
+document.getElementById('adminPanel').addEventListener('click', function(e) { if (e.target === this) closeAdmin(); });
+document.addEventListener('DOMContentLoaded', () => {
+    loadProperties();
+    initMap();
+});
+</script>
+</body>
+</html>

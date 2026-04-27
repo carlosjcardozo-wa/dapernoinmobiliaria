@@ -1,0 +1,77 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block admin_content %}
+<div class="admin-header">
+    <h1>Gestión de Propiedades</h1>
+    <a href="{{ url_for('admin_nueva') }}" class="btn-agregar">+ Nueva Propiedad</a>
+</div>
+
+<div class="propiedades-admin">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Operación</th>
+                <th>Precio</th>
+                <th>Destacado</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prop in propiedades %}
+            <tr>
+                <td>{{ prop.id }}</td>
+                <td>{{ prop.titulo }}</td>
+                <td>{{ prop.operacion }}</td>
+                <td>{{ prop.precio }}</td>
+                <td>
+                    <button class="toggle-destacado" data-id="{{ prop.id }}" data-destacado="{{ prop.destacado|lower }}">
+                        {{ '⭐' if prop.destacado else '☆' }}
+                    </button>
+                </td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" class="toggle-activo" data-id="{{ prop.id }}" {{ 'checked' if prop.activo }}>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td class="acciones">
+                    <a href="{{ url_for('admin_editar', id=prop.id) }}" class="btn-editar">✏️ Editar</a>
+                    <button class="btn-eliminar" data-id="{{ prop.id }}">🗑️ Eliminar</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.querySelectorAll('.toggle-destacado').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const res = await fetch(`/admin/toggle-destacado/${id}`, { method: 'POST' });
+        const data = await res.json();
+        btn.innerHTML = data.destacado ? '⭐' : '☆';
+    });
+});
+
+document.querySelectorAll('.toggle-activo').forEach(chk => {
+    chk.addEventListener('change', async () => {
+        const id = chk.dataset.id;
+        await fetch(`/admin/toggle-activo/${id}`, { method: 'POST' });
+    });
+});
+
+document.querySelectorAll('.btn-eliminar').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        if (confirm('¿Eliminar esta propiedad?')) {
+            const id = btn.dataset.id;
+            await fetch(`/admin/eliminar/${id}`, { method: 'POST' });
+            location.reload();
+        }
+    });
+});
+</script>
+{% endblock %}

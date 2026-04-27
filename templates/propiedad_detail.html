@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}{{ propiedad.titulo }} - Daperno & Asociados{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <!-- Botón volver -->
+    <a href="{{ url_for('index') }}#propiedades" class="back-link">← Volver a propiedades</a>
+    
+    <!-- Encabezado -->
+    <div class="detail-header">
+        <h1>{{ propiedad.titulo }}</h1>
+        <div class="detail-operacion-badge {{ propiedad.operacion }}">
+            {{ propiedad.operacion|replace('venta', '🏷️ En Venta')|replace('alquiler', '🔑 Alquiler')|replace('alq-temp', '📅 Alquiler Temporario') }}
+        </div>
+    </div>
+
+    <div class="detail-content">
+        <!-- Columna izquierda: Información en texto -->
+        <div class="detail-info">
+            <div class="detail-precio">{{ propiedad.precio }}</div>
+            
+            <div class="detail-caracteristicas">
+                {% if propiedad.superficie %}
+                <div class="caract-item">
+                    <span class="caract-icon">📐</span>
+                    <span>{{ propiedad.superficie }} m² cubiertos</span>
+                </div>
+                {% endif %}
+                {% if propiedad.ambientes %}
+                <div class="caract-item">
+                    <span class="caract-icon">🏠</span>
+                    <span>{{ propiedad.ambientes }} ambientes</span>
+                </div>
+                {% endif %}
+                {% if propiedad.dormitorios %}
+                <div class="caract-item">
+                    <span class="caract-icon">🛏️</span>
+                    <span>{{ propiedad.dormitorios }} dormitorios</span>
+                </div>
+                {% endif %}
+                {% if propiedad.banos %}
+                <div class="caract-item">
+                    <span class="caract-icon">🚽</span>
+                    <span>{{ propiedad.banos }} baños</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="detail-ubicacion">
+                <h3>📍 Ubicación</h3>
+                <p>{{ propiedad.direccion }}, {{ propiedad.barrio }}</p>
+                <div id="detail-map" style="height: 250px; margin-top: 12px; border-radius: 12px; overflow: hidden;"></div>
+            </div>
+
+            <div class="detail-descripcion">
+                <h3>📋 Descripción</h3>
+                <p>{{ propiedad.descripcion or 'Sin descripción detallada.' }}</p>
+            </div>
+
+            <div class="detail-contacto">
+                <a href="https://wa.me/5493496426044?text=Hola%2C%20consulto%20por%3A%20{{ propiedad.titulo|urlencode }}" target="_blank" class="whatsapp-btn">
+                    💬 Consultar por WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <!-- Columna derecha: Galería de fotos -->
+        <div class="detail-gallery">
+            <div class="main-image">
+                {% if propiedad.imagenes %}
+                <img id="mainImage" src="{{ propiedad.imagenes[0].url }}" alt="{{ propiedad.titulo }}">
+                {% else %}
+                <div class="no-image">📷 Sin imágenes</div>
+                {% endif %}
+            </div>
+            {% if propiedad.imagenes|length > 1 %}
+            <div class="thumbnails">
+                {% for img in propiedad.imagenes %}
+                <img src="{{ img.url }}" class="thumbnail" onclick="document.getElementById('mainImage').src='{{ img.url }}'">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos específicos para la página de detalle */
+.detail-container {
+    max-width: 1200px;
+    margin: 100px auto 60px;
+    padding: 0 30px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accd);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: gap 0.2s;
+}
+.back-link:hover { gap: 10px; text-decoration: underline; }
+
+.detail-header {
+    margin-bottom: 30px;
+}
+.detail-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+.detail-operacion-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+}
+.detail-operacion-badge.venta { background: #2E7D9B; }
+.detail-operacion-badge.alquiler { background: #1B7B4B; }
+.detail-operacion-badge.alq-temp { background: var(--accd); }
+
+.detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+/* Columna izquierda (texto) */
+.detail-info {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(44,31,14,0.05);
+}
+.detail-precio {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accd);
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+}
+.detail-caracteristicas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 20px 0;
+    border-top: 1px solid var(--g200);
+    border-bottom: 1px solid var(--g200);
+    margin-bottom: 24px;
+}
+.caract-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+.caract-icon { font-size: 1.2rem; }
+
+.detail-ubicacion h3, .detail-descripcion h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+.detail-ubicacion p {
+    color: var(--soft);
+    margin-bottom: 12px;
+}
+.detail-descripcion p {
+    line-height: 1.6;
+    color: var(--soft);
+}
+.detail-contacto {
+    margin-top: 30px;
+}
+.whatsapp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #25D366;
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.whatsapp-btn:hover { background: #1da15a; }
+
+/* Columna derecha (galería) */
+.detail-gallery {
+    background: var(--g50);
+    border-radius: 24px;
+    padding: 20px;
+}
+.main-image {
+    background: var(--g100);
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.no-image {
+    font-size: 3rem;
+    color: var(--soft);
+}
+.thumbnails {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    border: 2px solid transparent;
+}
+.thumbnail:hover { opacity: 0.8; border-color: var(--acc); }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .detail-content { grid-template-columns: 1fr; }
+    .detail-container { padding: 0 20px; margin-top: 80px; }
+    .detail-header h1 { font-size: 1.6rem; }
+    .detail-precio { font-size: 1.5rem; }
+    .detail-caracteristicas { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+    // Mapa individual
+    var map = L.map('detail-map').setView([{{ propiedad.latitud or -31.4472 }}, {{ propiedad.longitud or -60.9313 }}], 15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+    }).addTo(map);
+    
+    L.marker([{{ propiedad.latitud or -31.4472 }}, {{ propiedad.longitud or -60.9313 }}]).addTo(map)
+        .bindPopup('<b>{{ propiedad.titulo }}</b><br>{{ propiedad.direccion }}')
+        .openPopup();
+</script>
+{% endblock %}
